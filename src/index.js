@@ -1,39 +1,53 @@
 import Phaser from 'phaser';
 import logoImg from './assets/logo.png';
+import backgroundImg from './assets/background.png';
+import squareImg from './assets/square.png';
 
-class MyGame extends Phaser.Scene
-{
-    constructor ()
-    {
-        super();
-    }
+class MyGame extends Phaser.Scene {
+	constructor() {
+		super();
+	}
 
-    preload ()
-    {
-        this.load.image('logo', logoImg);
-    }
-      
-    create ()
-    {
-        const logo = this.add.image(400, 150, 'logo');
-      
-        this.tweens.add({
-            targets: logo,
-            y: 450,
-            duration: 2000,
-            ease: "Power2",
-            yoyo: true,
-            loop: -1
-        });
-    }
+	preload() {
+		this.load.image('background', backgroundImg);
+		this.load.image('square', squareImg);
+	}
+
+	create() {
+		this.createBg();
+		this.createSquare();
+	}
+	createBg() {
+		this.add.image(0, 0, 'background').setOrigin(0, 0);
+	}
+
+	createSquare() {
+		this.physics.add.sprite(config.squareStartPosition.x, config.squareStartPosition.y, 'square').setOrigin(0.5, 0.5);
+	}
 }
 
+const WIDTH = 320;
+const HEIGHT = 240;
+const SQUARE_POSITION = { x: WIDTH * 0.5, y: HEIGHT / 2 };
+
+const sharedConfig = {
+	width: WIDTH,
+	height: HEIGHT,
+	squareStartPosition: SQUARE_POSITION,
+};
 const config = {
-    type: Phaser.AUTO,
-    parent: 'phaser-example',
-    width: 800,
-    height: 600,
-    scene: MyGame
+	scale: {
+		mode: Phaser.Scale.FIT,
+	},
+	type: Phaser.AUTO,
+	...sharedConfig,
+	physics: {
+		default: 'arcade',
+		arcade: {
+			debug: true,
+		},
+	},
+	scene: MyGame,
 };
 
-const game = new Phaser.Game(config);
+new Phaser.Game(config);
