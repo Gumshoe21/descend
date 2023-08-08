@@ -1,49 +1,114 @@
-# Phaser 3 Webpack Project Template
+# Phaser 3 + TypeScript + Vite.js Template
+> Make Phaser 3 games with TypeScript and modern frontend tooling.
 
-A Phaser 3 project template with ES6 support via [Babel 7](https://babeljs.io/) and [Webpack 4](https://webpack.js.org/) that includes hot-reloading for development and production-ready builds.
+![License](https://img.shields.io/badge/license-MIT-green)
 
-This has been updated for Phaser 3.50.0 version and above.
+This is a TypeScript specific fork of [phaser3-vite-template](https://github.com/ourcade/phaser3-vite-template).
 
-Loading images via JavaScript module `import` is also supported, although not recommended.
+## Prerequisites
 
-## Requirements
+You'll need [Node.js](https://nodejs.org/en/) and [npm](https://www.npmjs.com/) installed.
 
-[Node.js](https://nodejs.org) is required to install dependencies and run scripts via `npm`.
+It is highly recommended to use [Node Version Manager](https://github.com/nvm-sh/nvm) (nvm) to install Node.js and npm.
 
-## Available Commands
+For Windows users there is [Node Version Manager for Windows](https://github.com/coreybutler/nvm-windows).
 
-| Command | Description |
-|---------|-------------|
-| `npm install` | Install project dependencies |
-| `npm start` | Build project and open web server running project |
-| `npm run build` | Builds code bundle with production settings (minification, uglification, etc..) |
+Install Node.js and `npm` with `nvm`:
 
-## Writing Code
+```bash
+nvm install node
 
-After cloning the repo, run `npm install` from your project directory. Then, you can start the local development server by running `npm start`.
+nvm use node
+```
 
-After starting the development server with `npm start`, you can edit any files in the `src` folder and webpack will automatically recompile and reload your server (available at `http://localhost:8080` by default).
+Replace 'node' with 'latest' for `nvm-windows`.
 
-## Customizing the Template
+## Getting Started
 
-### Babel
+You can clone this repository or use [degit](https://github.com/Rich-Harris/degit) to scaffold the project like this:
 
-You can write modern ES6+ JavaScript and Babel will transpile it to a version of JavaScript that you want your project to support. The targeted browsers are set in the `.babelrc` file and the default currently targets all browsers with total usage over "0.25%" but excludes IE11 and Opera Mini.
+```bash
+npx degit https://github.com/ourcade/phaser3-typescript-vite-template my-folder-name
+cd my-folder-name
 
- ```
-"browsers": [
-  ">0.25%",
-  "not ie 11",
-  "not op_mini all"
-]
- ```
+npm install
+```
 
-### Webpack
+Start development server:
 
-If you want to customize your build, such as adding a new webpack loader or plugin (i.e. for loading CSS or fonts), you can modify the `webpack/base.js` file for cross-project changes, or you can modify and/or create new configuration files and target them in specific npm tasks inside of `package.json'.
+```
+npm run start
+```
 
-## Deploying Code
+To create a production build:
 
-After you run the `npm run build` command, your code will be built into a single bundle located at `dist/bundle.min.js` along with any other assets you project depended. 
+```
+npm run build
+```
 
-If you put the contents of the `dist` folder in a publicly-accessible location (say something like `http://mycoolserver.com`), you should be able to open `http://mycoolserver.com/index.html` and play your game.
+Production files will be placed in the `dist` folder. Then upload those files to a web server. 🎉
+
+## Project Structure
+
+```
+    .
+    ├── dist
+    ├── node_modules
+    ├── public
+    ├── src
+    │   ├── HelloWorldScene.ts
+    │   ├── main.ts
+	├── index.html
+    ├── package.json
+```
+
+TypeScript files are intended for the `src` folder. `main.ts` is the entry point referenced by `index.html`.
+
+Other than that there is no opinion on how you should structure your project.
+
+There is an example `HelloWorldScene.ts` file that can be placed inside a `scenes` folder to organize by type or elsewhere to organize by function. For example, you can keep all files specific to the HelloWorld scene in a `hello-world` folder.
+
+It is all up to you!
+
+## Static Assets
+
+Any static assets like images or audio files should be placed in the `public` folder. It'll then be served from the root. For example: http://localhost:8000/images/my-image.png
+
+Example `public` structure:
+
+```
+    public
+    ├── images
+    │   ├── my-image.png
+    ├── music
+    │   ├── ...
+    ├── sfx
+    │   ├── ...
+```
+
+They can then be loaded by Phaser with `this.image.load('my-image', 'images/my-image.png')`.
+
+# TypeScript ESLint
+
+This template uses a basic `typescript-eslint` set up for code linting.
+
+It does not aim to be opinionated.
+
+[See here for rules to turn on or off](https://eslint.org/docs/rules/).
+
+## Dev Server Port
+
+You can change the dev server's port number by modifying the `vite.config.ts` file. Look for the `server` section:
+
+```js
+{
+	// ...
+	server: { host: '0.0.0.0', port: 8000 },
+}
+```
+
+Change 8000 to whatever you want.
+
+## License
+
+[MIT License](https://github.com/ourcade/phaser3-vite-template/blob/master/LICENSE)

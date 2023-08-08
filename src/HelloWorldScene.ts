@@ -1,11 +1,10 @@
 import Phaser from 'phaser';
-import logoImg from './assets/logo.png';
 import backgroundImg from './assets/background.png';
 import characterImg from './assets/character.png';
 
-class MyGame extends Phaser.Scene {
+export default class HelloWorldScene extends Phaser.Scene {
 	constructor() {
-		super();
+		super('hello-world');
 	}
 
 	preload() {
@@ -17,6 +16,7 @@ class MyGame extends Phaser.Scene {
 		this.createBg();
 		this.createCharacter();
 	}
+
 	createBg() {
 		this.add.image(0, 0, 'background').setOrigin(0, 0);
 	}
@@ -51,7 +51,4 @@ const config = {
 			debug: true,
 		},
 	},
-	scene: MyGame,
 };
-
-new Phaser.Game(config);
