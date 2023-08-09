@@ -3,8 +3,13 @@ import backgroundImg from './assets/background.png';
 import characterImg from './assets/character.png';
 
 export default class HelloWorldScene extends Phaser.Scene {
+	isJumping = null;
+	player: any;
+	cursors: any;
 	constructor() {
 		super('hello-world');
+
+		this.player = null;
 	}
 
 	preload() {
@@ -15,17 +20,39 @@ export default class HelloWorldScene extends Phaser.Scene {
 	create() {
 		this.createBg();
 		this.createCharacter();
+
+		this.player = this.physics.add.sprite(
+			config.characterStartPosition.x,
+			config.characterStartPosition.y,
+			'character',
+		);
+		this.player.setCollideWorldBounds(true);
+		this.cursors = this.input.keyboard.createCursorKeys();
+	}
+
+	update() {
+		const { up, down, left, right } = this.cursors;
+
+		// moving left and right
+		if (left.isDown) {
+			this.player.setVelocityX(-50);
+		} else if (right.isDown) {
+			this.player.setVelocityX(50);
+		} else {
+			this.player.setVelocityX(0);
+		}
+		// moving up and down
+		if (up.isDown && this.player.body.onFloor()) {
+			this.player.setVelocityY(-200);
+		}
+		console.log(this.player.body.touching.down);
 	}
 
 	createBg() {
 		this.add.image(0, 0, 'background').setOrigin(0, 0);
 	}
 
-	createCharacter() {
-		this.physics.add
-			.sprite(config.characterStartPosition.x, config.characterStartPosition.y, 'character')
-			.setOrigin(0.5, 0.5);
-	}
+	createCharacter() {}
 }
 
 const WIDTH = 800;
