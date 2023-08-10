@@ -4,7 +4,10 @@ import characterImg from './assets/character.png';
 
 export default class HelloWorldScene extends Phaser.Scene {
 	isJumping = null;
+	hasDoubleJump = true;
 	player: any;
+	PLAYER_VELOCITY_MAX = 200;
+	PLAYER_VELOCITY_STEP = 20;
 	cursors: any;
 	constructor() {
 		super('hello-world');
@@ -30,22 +33,36 @@ export default class HelloWorldScene extends Phaser.Scene {
 		this.cursors = this.input.keyboard.createCursorKeys();
 	}
 
-	update() {
+	handleControls() {
 		const { up, down, left, right } = this.cursors;
-
 		// moving left and right
-		if (left.isDown) {
-			this.player.setVelocityX(-50);
-		} else if (right.isDown) {
-			this.player.setVelocityX(50);
+		if (left.isDown && !right.isDown) {
+			if (this.player.body.velocity.x > -this.PLAYER_VELOCITY_MAX) {
+				this.player.body.velocity.x -= this.PLAYER_VELOCITY_STEP;
+			}
+		} else if (right.isDown && !left.isDown) {
+			if (this.player.body.velocity.x < this.PLAYER_VELOCITY_MAX) {
+				this.player.body.velocity.x += this.PLAYER_VELOCITY_STEP;
+			}
+			console.log(this.player.body.velocity.x);
 		} else {
 			this.player.setVelocityX(0);
 		}
 		// moving up and down
-		if (up.isDown && this.player.body.onFloor()) {
+		if (this.player.body.onFloor() && Phaser.Input.Keyboard.JustDown(up)) {
+			this.player.setVelocityY(-200);
+		} else if (!this.player.body.onFloor() && Phaser.Input.Keyboard.JustDown(up) && this.hasDoubleJump) {
+			this.hasDoubleJump = false; // consume double jump when used in the air
 			this.player.setVelocityY(-200);
 		}
-		console.log(this.player.body.touching.down);
+		console.log(this.player.body.onFloor());
+		if (this.player.body.onFloor()) {
+			this.hasDoubleJump = true; // Make double jump available whenever player is on the floor.
+		}
+	}
+
+	update() {
+		this.handleControls();
 	}
 
 	createBg() {
