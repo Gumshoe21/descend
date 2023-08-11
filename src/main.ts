@@ -1,10 +1,25 @@
 import Phaser from 'phaser';
+import GameScene from './scenes/GameScene';
+import { GameConfig } from './types';
 
-import HelloWorldScene from './HelloWorldScene';
+const WIDTH = 800;
+const HEIGHT = 600;
+const CHARACTER_POSITION = { x: WIDTH * 0.5, y: HEIGHT / 2 };
 
-const config: Phaser.Types.Core.GameConfig = {
+const SHARED_CONFIG = {
+	width: WIDTH,
+	height: HEIGHT,
+	characterStartPosition: CHARACTER_POSITION,
+};
+
+const Scenes = [GameScene]; // order matters
+const createScene = Scene => new Scene(SHARED_CONFIG); // helper function to instantiate scene
+const initScenes = () => Scenes.map(createScene); // initializes all scenes
+
+const config: GameConfig = {
 	type: Phaser.AUTO,
 	parent: 'app',
+	...SHARED_CONFIG,
 	width: 800,
 	height: 600,
 	physics: {
@@ -13,7 +28,7 @@ const config: Phaser.Types.Core.GameConfig = {
 			debug: true,
 		},
 	},
-	scene: [HelloWorldScene],
+	scene: initScenes(),
 };
 
-export default new Phaser.Game(config);
+new Phaser.Game(config);
