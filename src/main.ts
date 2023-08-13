@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import GameScene from './scenes/GameScene';
-import { GameConfig } from './types';
+import { GameConfig, SceneCreator } from './types';
 
 const WIDTH = 800;
 const HEIGHT = 600;
@@ -13,8 +13,12 @@ const SHARED_CONFIG = {
 };
 
 const Scenes = [GameScene]; // order matters
-const createScene = Scene => new Scene(SHARED_CONFIG); // helper function to instantiate scene
-const initScenes = () => Scenes.map(createScene); // initializes all scenes
+
+const createScene: SceneCreator<Phaser.Scene> = (Scene, config) => {
+	return new Scene(config);
+};
+
+const initScenes = (config: GameConfig) => Scenes.map(scene => createScene(scene, config)); // initializes all scenes
 
 const config: GameConfig = {
 	type: Phaser.AUTO,
@@ -28,7 +32,7 @@ const config: GameConfig = {
 			debug: true,
 		},
 	},
-	scene: initScenes(),
+	scene: initScenes(SHARED_CONFIG),
 };
 
 new Phaser.Game(config);
