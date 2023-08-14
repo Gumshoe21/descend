@@ -1,6 +1,7 @@
 import backgroundImg from '../assets/background.png';
-import characterImg from '../assets/character.png';
-
+import characterImg from '../assets/Gunner_Green_Run.png';
+import characterIdleImg from '../assets/Gunner_Green_Idle.png';
+import characterJumpImg from '../assets/Gunner_Green_Jump.png';
 import { GameConfig } from '../types';
 import Player from '../entities/Player'; // your new Player class
 
@@ -8,7 +9,6 @@ export default class GameScene extends Phaser.Scene {
 	player!: Player;
 	cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
 	config: GameConfig;
-
 	constructor(config: GameConfig) {
 		super('GameScene');
 		this.config = config;
@@ -16,8 +16,9 @@ export default class GameScene extends Phaser.Scene {
 
 	preload() {
 		this.load.image('background', backgroundImg);
-		this.load.image('character', characterImg);
-		this.cursors = this.input.keyboard.createCursorKeys();
+		this.load.spritesheet('character', characterImg, { frameWidth: 48, frameHeight: 48 });
+		this.load.spritesheet('character_idle', characterIdleImg, { frameWidth: 48, frameHeight: 48 });
+		this.load.spritesheet('jump', characterJumpImg, { frameWidth: 48, frameHeight: 48 });
 	}
 
 	create() {

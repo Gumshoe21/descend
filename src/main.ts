@@ -33,6 +33,7 @@ const config: GameConfig = {
 		},
 	},
 	scene: initScenes(SHARED_CONFIG),
+	input: { gamepad: true },
 };
 
 new Phaser.Game(config);
