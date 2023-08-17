@@ -8,6 +8,10 @@ export default class Player {
 	hasDoubleJump: boolean;
 	playerJumped: boolean;
 	pad;
+	playerStartPosition: {
+		x: number;
+		y: number;
+	};
 
 	VELOCITY_X_MAX: number;
 	VELOCITY_X_STEP: number;
@@ -30,27 +34,22 @@ export default class Player {
 		this.normalGravityY = 600;
 		this.maxJumpTime = 300;
 
+		this.playerStartPosition = {
+			x: config.width * 0.5,
+			y: config.height,
+		};
 		this.scene = scene;
 
 		this.sprite = this.scene.physics.add.sprite(
-			config.characterStartPosition.x,
-			config.characterStartPosition.y,
+			this.playerStartPosition.x,
+			this.playerStartPosition.y,
 			'character_idle',
 		);
 
 		this.sprite.setCollideWorldBounds(true);
 		this.sprite.body.gravity.y = this.normalGravityY; // Set initial gravity.
-		// this.sprite.setMaxVelocity(this.VELOCITY_X_MAX, 1000);
+
 		this.cursors = this.scene.input.keyboard.createCursorKeys();
-		if (this.scene.input.gamepad.total === 0) {
-			this.scene.input.gamepad.once('connected', pad => {
-				this.pad = pad;
-				console.log(`${pad} connected`);
-			});
-		} else {
-			this.pad = this.scene.input.gamepad.pad1;
-			console.log(`${this.pad} connected`);
-		}
 
 		this.sprite.anims.create({
 			key: 'right',
@@ -91,97 +90,47 @@ export default class Player {
 	}
 
 	handleControls() {
+		this.animateHorizontalGroundMovement();
 		this.resetDoubleJump();
-		//this.handleJump();
-		this.handleJumpGamepad();
+		this.handleJump();
 
-		//this.handleHorizontalMovement();
-		this.handleHorizontalMovementGamepad();
-		//this.animateHorizontalAirMovementGamepad();
-		this.animateHorizontalGroundMovementGamepad();
+		this.handleHorizontalMovement();
 
-		// this.animateVerticalMovement();
-		// this.animateHorizontalAirMovement();
-		// this.animateHorizontalGroundMovement();
+		this.animateVerticalMovement();
 	}
 
-	animateHorizontalGroundMovementGamepad() {
-		// If at least one gamepad is connected
-		if (this.pad && this.pad.total !== 0) {
-			const { x: xAxis, y: yAxis } = this.pad.leftStick;
-			if (this.sprite.body.onFloor() && xAxis === 2) {
-				this.sprite.anims.play('right', true);
-				this.sprite.setFlipX(false);
-				console.log('hi');
-			} else if (this.sprite.body.onFloor() && xAxis === -1) {
-				this.sprite.setFlipX(true);
-				this.sprite.anims.play('right', true);
-			}
-			if (!this.sprite.body.onFloor() && xAxis === 2) {
-				this.sprite.setFlipX(false);
-			} else if (!this.sprite.body.onFloor() && xAxis === -1) {
-				this.sprite.setFlipX(true);
-			} else if (this.sprite.body.onFloor() && xAxis > 2) {
-				this.sprite.anims.play('idle', true);
-			}
-		}
-	}
 	animateHorizontalGroundMovement() {
-		const { left, right } = this.cursors;
-		if (this.sprite.body.onFloor() && !left.isDown && right.isDown) {
+		if (this.sprite.body.onFloor() && this.scene.controlManager.isRightPressed()) {
 			this.sprite.anims.play('right', true);
 			this.sprite.setFlipX(false);
-		} else if (this.sprite.body.onFloor() && !right.isDown && left.isDown) {
+		} else if (this.sprite.body.onFloor() && this.scene.controlManager.isLeftPressed()) {
 			this.sprite.setFlipX(true);
 			this.sprite.anims.play('right', true);
 		}
-		if (!this.sprite.body.onFloor() && !left.isDown && right.isDown) {
+		if (!this.sprite.body.onFloor() && this.scene.controlManager.isRightPressed()) {
 			this.sprite.setFlipX(false);
-		} else if (!this.sprite.body.onFloor() && !right.isDown && left.isDown) {
+		} else if (!this.sprite.body.onFloor() && this.scene.controlManager.isLeftPressed()) {
 			this.sprite.setFlipX(true);
-		} else if (this.sprite.body.onFloor() && !right.isDown && !left.isDown) {
+		} else if (this.sprite.body.onFloor() && this.scene.controlManager.nothingIsPressed()) {
 			this.sprite.anims.play('idle', true);
 		}
 	}
 
-	handleHorizontalMovementGamepad() {
-		//gamepad
-		if (this.pad) {
-			const { x: xAxis, y: yAxis } = this.pad.leftStick;
-			if (xAxis == -1) {
-				console.log(this.pad.leftStick);
-
-				if (this.sprite.body.velocity.x > -this.VELOCITY_X_MAX) {
-					this.sprite.body.velocity.x -= this.VELOCITY_X_STEP;
-				}
-				console.log(this.sprite.body.velocity.x);
-			} else if (xAxis == 2) {
-				if (this.sprite.body.velocity.x < this.VELOCITY_X_MAX) {
-					this.sprite.body.velocity.x += this.VELOCITY_X_STEP;
-				}
-			} else if (!this.sprite.body.onFloor() && xAxis > 2 && this.sprite.body.velocity.x !== 0) {
-				if (this.sprite.body.velocity.x < 0) {
-					this.sprite.body.velocity.x += 1;
-				} else if (this.sprite.body.velocity.x > 0) {
-					this.sprite.body.velocity.x -= 1;
-				}
-			} else {
-				this.sprite.setVelocityX(0);
-			}
-		}
-	}
 	handleHorizontalMovement() {
-		//keyboard
 		const { left, right } = this.cursors;
-		if (left.isDown && !right.isDown) {
+		if (this.scene.controlManager.isLeftPressed()) {
 			if (this.sprite.body.velocity.x > -this.VELOCITY_X_MAX) {
 				this.sprite.body.velocity.x -= this.VELOCITY_X_STEP;
 			}
-		} else if (right.isDown && !left.isDown) {
+		} else if (this.scene.controlManager.isRightPressed()) {
 			if (this.sprite.body.velocity.x < this.VELOCITY_X_MAX) {
 				this.sprite.body.velocity.x += this.VELOCITY_X_STEP;
 			}
-		} else if (!this.sprite.body.onFloor() && !left.isDown && !right.isDown && this.sprite.body.velocity.x !== 0) {
+		} else if (
+			!this.sprite.body.onFloor() &&
+			!this.scene.controlManager.nothingIsPressed() &&
+			this.sprite.body.velocity.x !== 0
+		) {
 			if (this.sprite.body.velocity.x < 0) {
 				this.sprite.body.velocity.x += 1;
 			} else if (this.sprite.body.velocity.x > 0) {
@@ -196,7 +145,7 @@ export default class Player {
 		const { up } = this.cursors;
 		this.setJumpPhysics();
 		// Start the jump if on the floor
-		if (this.sprite.body.onFloor() && Phaser.Input.Keyboard.JustDown(up)) {
+		if (this.sprite.body.onFloor() && this.scene.controlManager.jumpButtonJustPressed()) {
 			this.jumpButtonHoldTime = 0; // reset jump button hold time
 			this.playerJumped = true;
 			// this.player.setVelocityY(-290);
@@ -213,49 +162,21 @@ export default class Player {
 			}
 		}
 		// On releasing the jump button or after exceeding max jump time
-		if (Phaser.Input.Keyboard.JustUp(up) || (this.jumpButtonHoldTime > this.MAX_JUMP_TIME && this.playerJumped)) {
+		if (
+			this.scene.controlManager.jumpButtonJustReleased() ||
+			(this.jumpButtonHoldTime > this.MAX_JUMP_TIME && this.playerJumped)
+		) {
 			this.playerJumped = false; // player's jump is no longer influenced by the jump button
 			this.sprite.setGravityY(this.currentGravityY * 100);
 		}
 		// Implementing the double jump
-		if (!this.sprite.body.onFloor() && Phaser.Input.Keyboard.JustDown(up) && this.hasDoubleJump) {
+		if (!this.sprite.body.onFloor() && this.scene.controlManager.jumpButtonJustPressed() && this.hasDoubleJump) {
 			this.hasDoubleJump = false;
+			console.log('hi');
 			this.sprite.setVelocityY(-300);
 		}
 	}
-	handleJumpGamepad() {
-		if (this.pad) {
-			const { up } = this.cursors;
-			this.setJumpPhysics();
-			// Start the jump if on the floor
-			if (this.sprite.body.onFloor() && this.pad.isButtonDown(0)) {
-				this.jumpButtonHoldTime = 0; // reset jump button hold time
-				this.playerJumped = true;
-				// this.player.setVelocityY(-290);
-				this.sprite.setVelocityY(-this.jumpVelocityX * 100);
-			}
-			// If the player continues to hold the jump button after starting a jump
-			if (up.isDown && this.playerJumped) {
-				this.jumpButtonHoldTime += this.scene.game.loop.delta; // accumulate hold time
 
-				// If still within the "extra jump" window, give the player some extra upward force
-				if (this.jumpButtonHoldTime <= this.MAX_JUMP_TIME && this.sprite.body.gravity.y >= -20) {
-					//		this.player.body.gravity.y -= this.game.loop.delta * 10;
-					this.sprite.body.gravity.y -= this.scene.game.loop.delta * this.reducedGravityY;
-				}
-			}
-			// On releasing the jump button or after exceeding max jump time
-			if (Phaser.Input.Keyboard.JustUp(up) || (this.jumpButtonHoldTime > this.MAX_JUMP_TIME && this.playerJumped)) {
-				this.playerJumped = false; // player's jump is no longer influenced by the jump button
-				this.sprite.setGravityY(this.currentGravityY * 100);
-			}
-			// Implementing the double jump
-			if (!this.sprite.body.onFloor() && Phaser.Input.Keyboard.JustDown(up) && this.hasDoubleJump) {
-				this.hasDoubleJump = false;
-				this.sprite.setVelocityY(-300);
-			}
-		}
-	}
 	setJumpPhysics() {
 		const runSpeed = Math.abs(this.sprite.body.velocity.x);
 		const basejumpVelocityX = 3;
