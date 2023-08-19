@@ -43,85 +43,44 @@ export default class Player {
 
 		this.sprite.setCollideWorldBounds(true);
 		this.sprite.body.gravity.y = this.normalGravityY; // Set initial gravity.
-
+		this.sprite.setOrigin(1, 1);
 		this.cursors = this.scene.input.keyboard.createCursorKeys();
+		// this.scene.anims.createFromAseprite('testanims');
 		this.sprite.anims.create({
 			key: 'flower_girl_idle',
-			frames: [{ key: 'testanims', frame: 'sidescrollflowergirlthing0.aseprite' }],
+			frames: [{ key: 'testanims', frame: '0' }],
 			frameRate: 2,
 			repeat: -1,
 		});
 		this.sprite.anims.create({
 			key: 'flower_girl_run',
-			frames: [{ key: 'testanims', frame: 'sidescrollflowergirlthing1.aseprite' }],
-			frameRate: 2,
-			repeat: -1,
-		});
-		/*
-		this.sprite.anims.create({
-			key: 'right',
-			frames: this.sprite.anims.generateFrameNumbers('character', { start: 1, end: 6 }),
-			frameRate: 10,
+			frames: [
+				{ key: 'testanims', frame: '0' },
+				{ key: 'testanims', frame: '1' },
+			],
+			frameRate: 8,
 			repeat: -1,
 		});
 		this.sprite.anims.create({
-			key: 'idle',
-			frames: this.sprite.anims.generateFrameNumbers('character_idle', { start: 0, end: 5 }),
-			frameRate: 10,
+			key: 'flower_girl_jump',
+			frames: [{ key: 'testanims', frame: '2' }],
 			repeat: -1,
 		});
 		this.sprite.anims.create({
-			key: 'jumpRise',
-			frames: this.sprite.anims.generateFrameNumbers('jump', { start: 0, end: 0 }),
-			frameRate: 0,
-			repeat: -1,
-		});
-		this.sprite.anims.create({
-			key: 'jumpFall',
-			frames: this.sprite.anims.generateFrameNumbers('jump', { start: 1, end: 1 }),
-			frameRate: 0,
-			repeat: -1,
-		});
-		*/
-	}
-
-	/*
-		this.sprite.anims.create({
-			key: 'flower_girl_idle',
-			frames: this.sprite.anims.generateFrameNumbers('flower_girl', { start: 0, end: 0 }),
-			frameRate: 60,
-			repeat: 0,
-		});
-		this.sprite.anims.create({
-			key: 'flower_girl_run',
-			frames: this.sprite.anims.generateFrameNumbers('flower_girl', { start: 0, end: 1 }),
-			frameRate: 15,
-			repeat: -1,
-		});
-		this.sprite.anims.create({
-			key: 'jumpRise',
-			frames: this.sprite.anims.generateFrameNumbers('flower_girl', { start: 2, end: 2 }),
-			frameRate: 0,
-			repeat: -1,
-		});
-		this.sprite.anims.create({
-			key: 'jumpFall',
-			frames: this.sprite.anims.generateFrameNumbers('flower_girl', { start: 3, end: 3 }),
-			frameRate: 0,
+			key: 'flower_girl_fall',
+			frames: [{ key: 'testanims', frame: '3' }],
 			repeat: -1,
 		});
 	}
-	*/
-	// Define custom frames
 
 	animateVerticalMovement() {
 		if (!this.sprite.body.onFloor()) {
 			if (this.sprite.body.velocity.y < 0) {
 				// Any negative value represents a jump
-				this.sprite.anims.play('my_atlas', true);
+				this.sprite.anims.play('flower_girl_jump', true);
 			} else if (this.sprite.body.velocity.y > 0) {
 				// Positive value represents falling
-				this.sprite.anims.play('jumpFall', true);
+				this.sprite.anims.play('flower_girl_fall', true);
 			}
 		}
 	}
@@ -208,7 +167,6 @@ export default class Player {
 		// Implementing the double jump
 		if (!this.sprite.body.onFloor() && this.scene.controlManager.jumpButtonJustPressed() && this.hasDoubleJump) {
 			this.hasDoubleJump = false;
-			console.log('hi');
 			this.sprite.setVelocityY(-300);
 		}
 	}

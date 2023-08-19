@@ -15,6 +15,7 @@ export default class GameScene extends Phaser.Scene {
 	config: GameConfig;
 	controlManager!: ControlManager;
 	allObjectsGroup!: Phaser.GameObjects.Group;
+	atlas: JSON;
 
 	constructor(config: GameConfig) {
 		super('GameScene');
@@ -26,23 +27,11 @@ export default class GameScene extends Phaser.Scene {
 		this.load.image('toggleButtonController', toggleButtonController);
 		this.load.image('toggleButtonKeyboard', toggleButtonKeyboard);
 		this.load.image('background', backgroundImg);
-		//this.load.spritesheet('character', characterImg, { frameWidth: 48, frameHeight: 48 });
-		//this.load.spritesheet('character_idle', characterIdleImg, { frameWidth: 48, frameHeight: 48 });
 		this.load.spritesheet('jump', characterJumpImg, { frameWidth: 48, frameHeight: 48 });
 		this.load.atlas('testanims', flowerGirlSheet, flowerJson);
+		//this.load.aseprite('testanims', flowerGirlSheet, flowerJson);
 	}
-	/*
-	rotateAllObjects() {
-		this.allObjectsGroup.getChildren().forEach(gameObject => {
-			this.tweens.add({
-				targets: gameObject,
-				angle: 90, // Rotate by 90 degrees
-				duration: 1500, // 1 second, adjust as needed
-				ease: 'Power4',
-			});
-		});
-	}
-*/
+
 	create() {
 		const bgImg = this.add.image(400, 300, 'background').setOrigin(0.5, 0.5);
 		const toggleBtn = this.add.sprite(8, 8, 'toggleButtonKeyboard').setInteractive().setOrigin(0, 0);
@@ -67,11 +56,48 @@ export default class GameScene extends Phaser.Scene {
 	}
 
 	update() {
+		const flipOffsets = { '0': { x: 15, y: 43 }, '1': { x: 12, y: 40 }, '2': { x: 15, y: 43 }, '3': { x: 12, y: 40 } };
+
+		const offsets = {
+			'0': {
+				x: 0,
+				y: 43,
+			},
+			'1': { x: 0, y: 40 },
+			'2': {
+				x: 0,
+				y: 43,
+			},
+			'3': { x: 0, y: 40 },
+		};
+		const sizes = {
+			'0': {
+				x: 70,
+				y: 70,
+			},
+			'1': {
+				x: 73,
+				y: 73,
+			},
+			'2': {
+				x: 70,
+				y: 70,
+			},
+			'3': {
+				x: 73,
+				y: 73,
+			},
+		};
 		this.player.handleControls();
-		if (this.player.sprite.frame.name === 'sidescrollflowergirlthing0.aseprite') {
-			this.player.sprite.body.setSize(68, 68);
-		} else if (this.player.sprite.frame.name === 'sidescrollflowergirlthing1.aseprite') {
-			this.player.sprite.body.setSize(73, 73);
+		for (let i = 0; i < flowerJson.frames.length; i++) {
+			if (this.player.sprite.frame.name === flowerJson.frames[i].filename) {
+				this.player.sprite.setSize(sizes[i].x, sizes[i].y);
+				if (this.player.sprite.flipX) {
+					this.player.sprite.setOffset(flipOffsets[i].x, flipOffsets[i].y);
+				} else {
+					this.player.sprite.setOffset(offsets[i].x, offsets[i].y);
+				}
+			}
 		}
 	}
 
