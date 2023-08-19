@@ -1,8 +1,8 @@
 export default class ControlManager {
 	scene: Phaser.Scene;
 	controls: 'keyboard' | 'gamepad';
-	cursors: Phaser.Types.Input.Keyboard.CursorKeys;
-	gamepad: Phaser.Input.Gamepad.Gamepad | undefined;
+	cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
+	gamepad!: Phaser.Input.Gamepad.Gamepad;
 	prevButtonJumpState: boolean;
 	constructor(scene: Phaser.Scene, controls: 'keyboard' | 'gamepad') {
 		this.scene = scene;
