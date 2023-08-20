@@ -14,7 +14,7 @@ export default class ControlManager {
 		if (this.controls === 'keyboard') {
 			this.cursors = this.scene.input.keyboard.createCursorKeys();
 		} else if (this.controls === 'gamepad') {
-			if (this.scene.input.gamepad && this.scene.input.gamepad.pad1) {
+			if (this.scene.input.gamepad) {
 				this.gamepad = this.scene.input.gamepad.pad1;
 			} else {
 				this.cursors = this.scene.input.keyboard.createCursorKeys();
@@ -23,14 +23,15 @@ export default class ControlManager {
 			}
 		}
 	}
+
 	gamepadJumpButtonJustPressed(): boolean {
-		const currentJumpButtonState = this.gamepad.buttons[0].pressed;
+		const currentJumpButtonState = this.scene.input.gamepad.pad1.buttons[0].pressed;
 		const justPressed = !this.prevButtonJumpState && currentJumpButtonState;
 		this.prevButtonJumpState = currentJumpButtonState;
 		return justPressed;
 	}
 	gamepadJumpButtonJustReleased(): boolean {
-		const currentJumpButtonState = this.gamepad.buttons[0].pressed;
+		const currentJumpButtonState = this.scene.input.gamepad.pad1.buttons[0].pressed;
 		const justReleased = this.prevButtonJumpState && !currentJumpButtonState;
 		this.prevButtonJumpState = currentJumpButtonState;
 		return justReleased;
@@ -83,6 +84,8 @@ export default class ControlManager {
 	jumpButtonHeldDown(): boolean {
 		if (this.controls === 'keyboard') {
 			return this.cursors.up.isDown;
+		} else if (this.controls === 'gamepad') {
+			return this.gamepad.isButtonDown(2);
 		}
 		return false;
 	}

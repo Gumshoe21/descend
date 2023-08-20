@@ -28,11 +28,13 @@ export default class GameScene extends Phaser.Scene {
 		this.load.image('toggleButtonKeyboard', toggleButtonKeyboard);
 		this.load.image('background', backgroundImg);
 		this.load.spritesheet('jump', characterJumpImg, { frameWidth: 48, frameHeight: 48 });
-		this.load.atlas('testanims', flowerGirlSheet, flowerJson);
-		//this.load.aseprite('testanims', flowerGirlSheet, flowerJson);
+		//this.load.atlas('testanims', flowerGirlSheet, flowerJson);
+		this.load.aseprite('testanims', flowerGirlSheet, flowerJson);
 	}
 
 	create() {
+		this.controlManager = new ControlManager(this, 'keyboard');
+		this.controlManager.setMyControls();
 		const bgImg = this.add.image(400, 300, 'background').setOrigin(0.5, 0.5);
 		const toggleBtn = this.add.sprite(8, 8, 'toggleButtonKeyboard').setInteractive().setOrigin(0, 0);
 
@@ -50,12 +52,11 @@ export default class GameScene extends Phaser.Scene {
 		this.allObjectsGroup.add(toggleBtn);
 		this.allObjectsGroup.add(this.player.sprite);
 
-		this.controlManager = new ControlManager(this, 'keyboard');
-		this.controlManager.setMyControls();
 		// this.rotateAllObjects();
 	}
 
 	update() {
+		console.log(this.player.jumpButtonHoldTime);
 		const flipOffsets = { '0': { x: 15, y: 43 }, '1': { x: 12, y: 40 }, '2': { x: 15, y: 43 }, '3': { x: 12, y: 40 } };
 
 		const offsets = {
