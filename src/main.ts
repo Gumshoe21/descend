@@ -1,6 +1,6 @@
-import Phaser from 'phaser';
-import GameScene from './scenes/GameScene';
-import { GameConfig, SceneCreator } from './types';
+import Phaser from "phaser";
+import GameScene from "./scenes/GameScene";
+import { GameConfig, SceneCreator } from "./types";
 
 const gameWidth = 800;
 const gameHeight = 600;
@@ -22,9 +22,9 @@ const initScenes = (config: GameConfig) => Scenes.map(scene => createScene(scene
 
 const config: GameConfig = {
 	type: Phaser.AUTO,
-	parent: 'app',
+	parent: "app",
 	physics: {
-		default: 'arcade',
+		default: "arcade",
 		arcade: {
 			debug: true,
 		},

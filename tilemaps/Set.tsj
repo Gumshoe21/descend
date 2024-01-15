@@ -1,0 +1,14 @@
+{ "columns":82,
+ "image":"..\/..\/..\/Downloads\/s4m_ur4i_huge-assetpack-tilemap.png",
+ "imageheight":892,
+ "imagewidth":658,
+ "margin":0,
+ "name":"s4m_ur4i_huge-assetpack-tilemap",
+ "spacing":0,
+ "tilecount":9102,
+ "tiledversion":"1.10.2",
+ "tileheight":8,
+ "tilewidth":8,
+ "type":"tileset",
+ "version":"1.10"
+}
